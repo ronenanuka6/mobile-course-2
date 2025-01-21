@@ -1,4 +1,5 @@
 package com.example.assignment2
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment2.model.Model
 import com.example.assignment2.model.Student
+import android.content.Intent
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.assignment2.utils.Database
 
 interface OnItemClickListener {
     fun onItemClick(position: Int)
@@ -24,6 +28,7 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
 
     private var students: MutableList<Student>? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,7 +39,7 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
             insets
         }
 
-        students = Model.shared.students
+        students = Database.students
         val recyclerView: RecyclerView = findViewById(R.id.students_recycler_view)
         recyclerView.setHasFixedSize(true)
 
@@ -50,6 +55,15 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
             override fun onItemClick(student: Student?) {
                 // do something
             }
+        }
+
+        adapter.notifyDataSetChanged()
+
+        // Add FAB listener
+        val fabAddStudent: FloatingActionButton = findViewById(R.id.fab_add_student)
+        fabAddStudent.setOnClickListener {
+            val intent = Intent(this, AddStudentActivity::class.java)
+            startActivity(intent)
         }
 
         recyclerView.adapter = adapter

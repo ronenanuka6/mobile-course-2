@@ -4,5 +4,5 @@ data class Student(
     val name: String,
     val id : String,
     val avatarUrl: String,
-    var isChecked: Boolean
+    var isChecked: Boolean = false
 )
