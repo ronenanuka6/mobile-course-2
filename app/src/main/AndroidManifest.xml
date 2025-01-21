@@ -13,23 +13,18 @@
         android:theme="@style/Theme.Assignment2"
         tools:targetApi="31">
         <activity
-            android:name=".StudentDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".StudentAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".StudentListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".StudentRecyclerViewsActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
+        <activity
+            android:name=".AddStudentActivity"
+            android:exported="false" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
