@@ -120,7 +120,16 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
 
 
         override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-            holder.bind(students?.get(position), position)
+            val student = students?.get(position)
+            holder.bind(student, position)
+
+            holder.itemView.setOnClickListener {
+                val context = holder.itemView.context
+                val intent = Intent(context, ShowStudentActivity::class.java)
+                intent.putExtra("name", student?.name)
+                intent.putExtra("id", student?.id)
+                context.startActivity(intent)
+            }
         }
 
     }
