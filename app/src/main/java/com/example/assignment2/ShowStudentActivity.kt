@@ -3,6 +3,7 @@ package com.example.assignment2
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.assignment2.utils.Database
@@ -16,10 +17,15 @@ class ShowStudentActivity : AppCompatActivity() {
         // Get data from intent
         val name = intent.getStringExtra("name")
         val id = intent.getStringExtra("id")
+        val isCheckedDB = intent.getBooleanExtra("isChecked", false)
 
         // Set data in UI
         findViewById<TextView>(R.id.student_details_name).text = name
         findViewById<TextView>(R.id.student_details_id).text = id
+        findViewById<CheckBox>(R.id.show_student_checkbox).apply {
+            isChecked = isCheckedDB
+            isEnabled = false // Make the checkbox read-only
+        }
 
         // Cancel button to close the page
         findViewById<Button>(R.id.add_student_activity_cancel_button).setOnClickListener {
@@ -33,6 +39,7 @@ class ShowStudentActivity : AppCompatActivity() {
             val intent = Intent(this, EditStudentActivity::class.java)
             intent.putExtra("name", name)
             intent.putExtra("id", id)
+            intent.putExtra("isCheckedDB", isCheckedDB)
             startActivity(intent)
         }
     }

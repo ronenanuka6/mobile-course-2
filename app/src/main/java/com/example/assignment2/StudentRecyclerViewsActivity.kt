@@ -81,9 +81,18 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
             checkBox = itemView.findViewById(R.id.student_row_checkbox)
 
             checkBox?.apply {
-                setOnClickListener{ view ->
-                    (tag as? Int)?.let { tag ->
-                        student?.isChecked = (view as? CheckBox)?.isChecked ?: false
+                setOnClickListener { view ->
+                    (tag as? Int)?.let {
+                        val isChecked = (view as? CheckBox)?.isChecked ?: false
+                        student?.isChecked = isChecked
+
+                        // Update the student in the database
+                        student?.let { updatedStudent ->
+                            val index = Database.students.indexOfFirst { it.id == updatedStudent.id }
+                            if (index != -1) {
+                                Database.students[index] = updatedStudent
+                            }
+                        }
                     }
                 }
             }
@@ -128,6 +137,7 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
                 val intent = Intent(context, ShowStudentActivity::class.java)
                 intent.putExtra("name", student?.name)
                 intent.putExtra("id", student?.id)
+                intent.putExtra("isChecked", student?.isChecked ?: false)
                 context.startActivity(intent)
             }
         }

@@ -3,6 +3,7 @@ package com.example.assignment2
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ class EditStudentActivity : AppCompatActivity() {
 
         val nameEditText = findViewById<EditText>(R.id.edit_student_name)
         val idEditText = findViewById<EditText>(R.id.edit_student_id)
+        val isCheckedDB = findViewById<CheckBox>(R.id.edit_student_checkbox)
         val saveMsgTextView = findViewById<TextView>(R.id.edit_student_activity_save_message_textview)
         val saveButton = findViewById<Button>(R.id.edit_student_activity_save_button)
         val cancelButton = findViewById<Button>(R.id.edit_student_activity_cancel_button)
@@ -29,18 +31,21 @@ class EditStudentActivity : AppCompatActivity() {
         currentStudent?.let {
             nameEditText.setText(it.name)
             idEditText.setText(it.id)
+            isCheckedDB.isChecked = it.isChecked
         }
 
         // Save changes to the database
         saveButton.setOnClickListener {
             val newName = nameEditText.text.toString()
             val newId = idEditText.text.toString()
+            val isChecked = isCheckedDB.isChecked
 
             if (newName.isNotEmpty() && newId.isNotEmpty()) {
                 // Update the student in the database
                 currentStudent?.apply {
                     this.name = newName
                     this.id = newId
+                    this.isChecked = isChecked
                 }
 
                 // Show success message
@@ -50,6 +55,7 @@ class EditStudentActivity : AppCompatActivity() {
                 val intent = Intent(this, ShowStudentActivity::class.java)
                 intent.putExtra("name", newName)
                 intent.putExtra("id", newId)
+                intent.putExtra("isChecked", isChecked)
                 startActivity(intent)
 
                 // Close the current activity
