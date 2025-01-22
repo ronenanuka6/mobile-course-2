@@ -24,6 +24,8 @@
         <activity
             android:name=".AddStudentActivity"
             android:exported="false" />
+        <activity android:name=".ShowStudentActivity" />
+        <activity android:name=".EditStudentActivity" />
         <activity android:name=".MainActivity" />
     </application>
 

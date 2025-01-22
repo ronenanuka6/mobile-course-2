@@ -1,4 +1,5 @@
 package com.example.assignment2
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment2.model.Model
 import com.example.assignment2.model.Student
+import android.content.Intent
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.assignment2.utils.Database
 
 interface OnItemClickListener {
     fun onItemClick(position: Int)
@@ -24,6 +28,7 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
 
     private var students: MutableList<Student>? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,7 +39,7 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
             insets
         }
 
-        students = Model.shared.students
+        students = Database.students
         val recyclerView: RecyclerView = findViewById(R.id.students_recycler_view)
         recyclerView.setHasFixedSize(true)
 
@@ -52,6 +57,15 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
             }
         }
 
+        adapter.notifyDataSetChanged()
+
+        // Add FAB listener
+        val fabAddStudent: FloatingActionButton = findViewById(R.id.fab_add_student)
+        fabAddStudent.setOnClickListener {
+            val intent = Intent(this, AddStudentActivity::class.java)
+            startActivity(intent)
+        }
+
         recyclerView.adapter = adapter
 
     }
@@ -67,9 +81,18 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
             checkBox = itemView.findViewById(R.id.student_row_checkbox)
 
             checkBox?.apply {
-                setOnClickListener{ view ->
-                    (tag as? Int)?.let { tag ->
-                        student?.isChecked = (view as? CheckBox)?.isChecked ?: false
+                setOnClickListener { view ->
+                    (tag as? Int)?.let {
+                        val isChecked = (view as? CheckBox)?.isChecked ?: false
+                        student?.isChecked = isChecked
+
+                        // Update the student in the database
+                        student?.let { updatedStudent ->
+                            val index = Database.students.indexOfFirst { it.id == updatedStudent.id }
+                            if (index != -1) {
+                                Database.students[index] = updatedStudent
+                            }
+                        }
                     }
                 }
             }
@@ -106,7 +129,17 @@ class StudentRecyclerViewsActivity : AppCompatActivity() {
 
 
         override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-            holder.bind(students?.get(position), position)
+            val student = students?.get(position)
+            holder.bind(student, position)
+
+            holder.itemView.setOnClickListener {
+                val context = holder.itemView.context
+                val intent = Intent(context, ShowStudentActivity::class.java)
+                intent.putExtra("name", student?.name)
+                intent.putExtra("id", student?.id)
+                intent.putExtra("isChecked", student?.isChecked ?: false)
+                context.startActivity(intent)
+            }
         }
 
     }
